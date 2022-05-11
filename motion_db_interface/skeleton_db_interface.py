@@ -21,8 +21,8 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 # USE OR OTHER DEALINGS IN THE SOFTWARE.
 import json
-from common import call_bson_rest_interface, call_rest_interface
 from anim_utils.animation_data import SkeletonBuilder
+from .common import call_bson_rest_interface, call_rest_interface
 
 
 def get_skeleton_from_remote_db(url, skeleton_type, session=None):

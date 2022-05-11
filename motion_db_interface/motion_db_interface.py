@@ -33,7 +33,7 @@ import collections
 import bson
 import warnings
 from anim_utils.animation_data import BVHReader, BVHWriter, MotionVector, SkeletonBuilder
-from common import call_rest_interface, call_bson_rest_interface
+from .common import call_rest_interface, call_bson_rest_interface
 
 
 def get_bvh_str_by_id_from_remote_db(url, clip_id, session=None):

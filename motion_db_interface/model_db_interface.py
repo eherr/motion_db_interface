@@ -32,7 +32,6 @@ import scipy.interpolate as si
 import bson
 import bz2
 import warnings
-from common import call_bson_rest_interface, call_rest_interface
 from anim_utils.animation_data import BVHReader, BVHWriter, MotionVector, SkeletonBuilder
 from motion_db_interface import get_skeleton_from_remote_db, get_skeleton_model_from_remote_db, get_motion_list_from_remote_db,\
                                              get_bvh_str_by_id_from_remote_db, get_annotation_by_id_from_remote_db, \
@@ -42,6 +41,7 @@ from morphablegraphs.construction.utils import get_cubic_b_spline_knots
 from morphablegraphs.motion_model.motion_primitive_wrapper import MotionPrimitiveModelWrapper
 from morphablegraphs.construction.cluster_tree_builder import FeatureClusterTree
 from morphablegraphs.utilities import convert_to_mgrd_skeleton
+from .common import call_bson_rest_interface, call_rest_interface
 
 
 def get_model_list_from_remote_db(url, collection_id, skeleton="", session=None):
