@@ -27,12 +27,12 @@ Created on Mon Jun 20 2017
 """
 import numpy as np
 import json
-import requests
 import collections
 import scipy.interpolate as si
 import bson
 import bz2
 import warnings
+from common import call_bson_rest_interface, call_rest_interface
 from anim_utils.animation_data import BVHReader, BVHWriter, MotionVector, SkeletonBuilder
 from motion_db_interface import get_skeleton_from_remote_db, get_skeleton_model_from_remote_db, get_motion_list_from_remote_db,\
                                              get_bvh_str_by_id_from_remote_db, get_annotation_by_id_from_remote_db, \
@@ -43,15 +43,6 @@ from morphablegraphs.motion_model.motion_primitive_wrapper import MotionPrimitiv
 from morphablegraphs.construction.cluster_tree_builder import FeatureClusterTree
 from morphablegraphs.utilities import convert_to_mgrd_skeleton
 
-def call_rest_interface(url, method, data):
-    method_url = url+method
-    r = requests.post(method_url, data=json.dumps(data))
-    return r.text
-
-def call_bson_rest_interface(url, method, data):
-    method_url = url+method
-    r = requests.post(method_url, data=json.dumps(data))
-    return r.content
 
 def get_model_list_from_remote_db(url, collection_id, skeleton="", session=None):
     data = {"collection_id": collection_id, "skeleton": skeleton}

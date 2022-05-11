@@ -29,27 +29,11 @@ import numpy as np
 import json
 import bz2
 import base64
-import requests
 import collections
 import bson
 import warnings
 from anim_utils.animation_data import BVHReader, BVHWriter, MotionVector, SkeletonBuilder
-
-
-DB_URL = "https://motion.dfki.de/8888"
-
-#DB_URL = "https://localhost:8888/"
-
-
-def call_rest_interface(url, method, data):
-    method_url = url+method
-    r = requests.post(method_url, data=json.dumps(data), verify=False)
-    return r.text
-
-def call_bson_rest_interface(url, method, data):
-    method_url = url+method
-    r = requests.post(method_url, data=json.dumps(data), verify=False)
-    return r.content
+from common import call_rest_interface, call_bson_rest_interface
 
 
 def get_bvh_str_by_id_from_remote_db(url, clip_id, session=None):
@@ -153,31 +137,6 @@ def upload_bvh_to_db(url, name, bvh_str, collection, skeleton_model, meta_info, 
         data["time_function"] = ""
     result_text = call_rest_interface(url, "upload_motion", data)
 
-
-def get_skeleton_from_remote_db(url, skeleton_type, session=None):
-    data = {"skeleton_type": skeleton_type}
-    if session is not None:
-        data.update(session)
-    result_str = call_rest_interface(url, "get_skeleton", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
-    return result_data
-
-
-def get_skeleton_model_from_remote_db(url, skeleton_type, session=None):
-    data = {"skeleton_type": skeleton_type}
-    if session is not None:
-        data.update(session)
-    result_str = call_rest_interface(url, "get_skeleton_model", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
-    return result_data
-
-
 def delete_motion_by_id_from_remote_db(url, clip_id, is_processed=False, session=None):
     data = {"clip_id": clip_id, "is_processed": int(is_processed)}
     if session is not None:
@@ -248,40 +207,6 @@ def delete_collection_from_remote_db(url, col_id, session=None):
         data.update(session)
     result_str = call_rest_interface(url, "remove_collection", data)
 
-def get_skeletons_from_remote_db(url, session=None):
-    data = {}
-    result_str = call_rest_interface(url, "get_skeleton_list", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
-    return result_data
-
-def create_new_skeleton_in_db(url, name, skeleton_data, meta_data, session=None):
-    data = {"name": name, "data": skeleton_data}
-    if meta_data is not None:
-        data["meta_data"] = meta_data
-    if session is not None:
-        data.update(session)
-    result_str = call_rest_interface(url, "create_new_skeleton", data)
-
-def replace_skeleton_in_remote_db(url, name, skeleton_data, meta_data, session=None):
-    data = dict()
-    data["name"] = name
-    if skeleton_data is not None:
-        data["data"] = skeleton_data
-    if meta_data is not None:
-        data["meta_data"] = meta_data
-    if session is not None:
-        data.update(session)
-    result_str = call_rest_interface(url, "replace_skeleton", data)
-
-def delete_skeleton_from_remote_db(url, name, session=None):
-    data = {"name": name}
-    if session is not None:
-        data.update(session)
-    result_str = call_rest_interface(url, "remove_skeleton", data)
-
 
 def replace_motion_in_db(url, motion_id, name, motion_data, collection, skeleton_name, meta_data, is_processed=False, session=None):
     data = {"motion_id": motion_id,  "data": motion_data, "name": name, 
@@ -292,17 +217,6 @@ def replace_motion_in_db(url, motion_id, name, motion_data, collection, skeleton
         data.update(session)
     print("gogoogo")
     result_text = call_rest_interface(url, "replace_motion", data)
-
-
-
-def load_skeleton_from_db(db_url, skeleton_name, session=None):
-    skeleton_data = get_skeleton_from_remote_db(db_url, skeleton_name, session)
-    if skeleton_data is not None:
-        skeleton = SkeletonBuilder().load_from_custom_unity_format(skeleton_data)
-        skeleton_model = get_skeleton_model_from_remote_db(db_url, skeleton_name, session)
-        skeleton.skeleton_model = skeleton_model
-        return skeleton
-
 
 
 def get_bvh_string(skeleton, frames):
@@ -335,7 +249,6 @@ def create_sections_from_keyframes(keyframes):
         start = v
     #semantic_annotation[start] = {"start_idx":start,  "end_idx":end}
     return list(semantic_annotation.values())
-
 
 
 def get_bvh_from_str(bvh_str):
@@ -401,7 +314,6 @@ def create_keyframes_from_sections(sections):
     return keyframes
 
 
-
 def create_motion_vector_from_bvh(bvh_str, animated_joints=None):
     bvh_reader = get_bvh_from_str(bvh_str)
     print("loaded motion", bvh_reader.frames.shape)
@@ -440,15 +352,6 @@ def retarget_motion_in_db(db_url, retargeting, motion_id, motion_name, collectio
     m_data = target_motion.to_db_format()
     upload_motion_to_db(db_url, motion_name, m_data, collection, skeleton_model_name, meta_info_str, is_processed=is_aligned, session=session)
 
-
-def authenticate(url, user, pw):
-    data = {"username": user, "password": pw}
-    result_str = call_rest_interface(url, "authenticate", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
-    return result_data
 
 
 def start_cluster_job(url, imagename, job_name, job_desc, resources, session=None):
