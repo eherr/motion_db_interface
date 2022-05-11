@@ -1,4 +1,5 @@
 try:
+    from skeleton_db_interace import *
     from motion_db_interface import *
     try:
         from model_db_interface import *
