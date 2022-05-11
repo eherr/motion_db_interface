@@ -91,16 +91,17 @@ def get_motion_list_from_remote_db(url, collection_id, skeleton="", is_processed
         result_data = None
     return result_data
 
-N_MAX_SIZE = 200000#00000
 
 
-def split(motion_data):
+N_MAX_SIZE = 200000
+
+def split_data(motion_data, n_max_size=N_MAX_SIZE):
     segments = []
-    n_segments = (len(motion_data) // N_MAX_SIZE)  +1
+    n_segments = (len(motion_data) // n_max_size)  +1
     offset = 0
     for idx in range(n_segments):
-        segments.append(motion_data[offset:offset+N_MAX_SIZE])
-        offset+= N_MAX_SIZE
+        segments.append(motion_data[offset:offset+n_max_size])
+        offset += n_max_size
     return segments
 
 
@@ -109,7 +110,7 @@ def upload_motion_to_db(url, name, motion_data, collection, skeleton_name, meta_
         motion_data = bson.dumps(motion_data)
     motion_data = bz2.compress(motion_data)
     motion_data = base64.b64encode(motion_data).decode()
-    parts = split(motion_data)
+    parts = split_data(motion_data)
     for idx, part in enumerate(parts):
         #part_data = bytearray(part, "utf-8")
         data = {"data": part, "name": name, 

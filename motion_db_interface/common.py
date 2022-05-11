@@ -31,7 +31,7 @@ def call_rest_interface(url, method, data):
 
 def call_bson_rest_interface(url, method, data):
     method_url = url+method
-    r = requests.post(method_url, data=bson.dumps(data), verify=False)
+    r = requests.post(method_url, data=json.dumps(data), verify=False)
     return r.content
 
 

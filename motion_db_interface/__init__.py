@@ -1,5 +1,6 @@
 
 try:
+    from .common import authenticate
     from .skeleton_db_interface import *
     from .motion_db_interface import *
     try:
