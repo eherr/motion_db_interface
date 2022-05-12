@@ -1,7 +1,17 @@
 import argparse
-from anim_utils.retargeting.analytical import Retargeting, generate_joint_map
 from motion_db_interface import authenticate, get_motion_list_from_remote_db, load_skeleton_from_db, retarget_motion_in_db
-from utils import get_session
+from anim_utils.retargeting.analytical import Retargeting, generate_joint_map
+
+
+def get_session(args):
+   session = None
+   if args.user is not None and args.password is not None:
+       result = authenticate(args.db_url, args.user, args.password)
+       if "token" in result:
+            session = {"user": args.user, "token": result["token"]}
+   elif args.user is not None and args.token is not None:
+       session = {"user": args.user, "token": args.token}
+   return session
 
 
 
