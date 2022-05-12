@@ -376,24 +376,3 @@ def get_motion_list_by_name(url, name, exact_match):
     except:
         result_data = None
     return result_data
-
-def retarget_motion_in_db(db_url, retargeting, motion_id, motion_name, collection, skeleton_model_name, is_aligned=False, session=None):
-    motion_data = get_motion_by_id_from_remote_db(db_url, motion_id, is_processed=is_aligned)
-    if motion_data is None:
-        print("Error: motion data is empty")
-        return
-    
-    meta_info_str = get_annotation_by_id_from_remote_db(db_url, motion_id, is_processed=is_aligned)
-    motion_vector = MotionVector()
-    motion_vector.from_custom_db_format(motion_data)
-    motion_vector.skeleton = retargeting.src_skeleton
-    new_frames = retargeting.run(motion_vector.frames, frame_range=None)
-    target_motion = MotionVector()
-    target_motion.frames = new_frames
-    target_motion.skeleton = retargeting.target_skeleton
-    target_motion.frame_time = motion_vector.frame_time
-    target_motion.n_frames = len(new_frames)
-    m_data = target_motion.to_db_format()
-    upload_motion_to_db(db_url, motion_name, m_data, collection, skeleton_model_name, meta_info_str, is_processed=is_aligned, session=session)
-
-
