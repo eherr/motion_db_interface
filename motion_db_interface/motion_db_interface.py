@@ -32,8 +32,10 @@ import base64
 import collections
 import bson
 import warnings
-from anim_utils.animation_data import BVHReader, BVHWriter, MotionVector, SkeletonBuilder
+from anim_utils.animation_data import BVHReader, MotionVector, SkeletonBuilder
 from .common import call_rest_interface, call_bson_rest_interface
+from anim_utils.animation_data.bvh import convert_quaternion_to_euler_frames, generate_bvh_string
+
 
 
 def get_bvh_str_by_id_from_remote_db(url, clip_id, session=None):
@@ -219,14 +221,14 @@ def replace_motion_in_db(url, motion_id, name, motion_data, collection, skeleton
     print("gogoogo")
     result_text = call_rest_interface(url, "replace_motion", data)
 
-
 def get_bvh_string(skeleton, frames):
-    print("generate bvh string", len(skeleton.animated_joints))
-    frames = np.array(frames)
-    frames = skeleton.add_fixed_joint_parameters_to_motion(frames)
-    frame_time = skeleton.frame_time
-    bvh_writer = BVHWriter(None, skeleton, frames, frame_time, True)
-    return bvh_writer.generate_bvh_string()
+    print("generate bvh string", len(skeleton.animated_joints), skeleton.reference_frame_length, frames.shape)
+    if frames.shape[1] < skeleton.reference_frame_length:
+        frames = skeleton.add_fixed_joint_parameters_to_motion(frames)
+        print("after",  frames.shape)
+    euler_frames = convert_quaternion_to_euler_frames(skeleton, frames)
+    return generate_bvh_string(skeleton, euler_frames, skeleton.frame_time)
+
 
 def get_motion_vector(skeleton, frames):
     print("generate motion vector", len(skeleton.animated_joints))
