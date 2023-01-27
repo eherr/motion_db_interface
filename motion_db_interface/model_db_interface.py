@@ -31,8 +31,8 @@ import bz2
 from .common import call_bson_rest_interface, call_rest_interface
 
 
-def get_model_list_from_remote_db(url, collection_id, skeleton="", session=None):
-    data = {"collection_id": collection_id, "skeleton": skeleton}
+def get_model_list_from_remote_db(url, collection_id, skeleton="", format="mm", session=None):
+    data = {"collection_id": collection_id, "skeleton": skeleton, "format":format}
     if session is not None:
         data.update(session)
     result_str = call_rest_interface(url, "get_model_list", data)
@@ -50,9 +50,9 @@ def delete_model_by_id_from_remote_db(url, model_id, session=None):
     result_str = call_rest_interface(url, "delete_model", data)
     return result_str
 
-def upload_motion_model_to_remote_db(url, name, collection, skeleton_name, model_data, config, session=None):
+def upload_motion_model_to_remote_db(url, name, collection, skeleton_name, model_data, config, format="mm", session=None):
     data = {"name":name, "collection": collection, "skeleton_name": skeleton_name,
-            "data": model_data, "config": config}
+            "data": model_data, "config": config, "format":format}
     if session is not None:
         data.update(session)
     call_rest_interface(url, "upload_motion_model", data)
@@ -129,6 +129,32 @@ def download_graph_from_remote_db(url, graph_id, session=None):
     if session is not None:
         data.update(session)
     result_str = call_rest_interface(url, "download_graph", data)
+    try:
+        result_data = json.loads(result_str)
+    except:
+        result_data = None
+    return result_data
+
+def upload_model_to_remote_db(url, collection, skeleton_name, name, model_data, config=None, format="mm", session=None):
+    data = {"name": name, "collection": collection, "skeleton": skeleton_name,
+            "data": model_data, "format":format}
+    if config is not None:
+        data["config"] = config
+    if session is not None:
+        data.update(session)
+    result_str = call_rest_interface(url, "models/add", data)
+    try:
+        result_data = json.loads(result_str)
+    except:
+        result_data = None
+    return result_data
+    
+def replace_model_in_remote_db(url, model_id,  model_data, session=None):
+    data = {"model_id": model_id,
+            "data": model_data}
+    if session is not None:
+        data.update(session)
+    result_str = call_rest_interface(url, "models/replace", data)
     try:
         result_data = json.loads(result_str)
     except:
