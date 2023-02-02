@@ -44,6 +44,14 @@ def get_model_list_from_remote_db(url, collection_id, skeleton, model_format=Non
         result_data = None
     return result_data
 
+def upload_motion_model_to_remote_db(url, name, collection, skeleton_name, model_data, config, session=None):
+    data = {"name":name, "collection": collection, "skeleton_name": skeleton_name,
+            "data": model_data, "config": config, "format":"mm"}
+    if session is not None:
+        data.update(session)
+    call_rest_interface(url, "upload_motion_model", data)
+
+
 
 def delete_model_by_id_from_remote_db(url, model_id, session=None):
     data = {"model_id": model_id}
