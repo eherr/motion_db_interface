@@ -35,7 +35,7 @@ def get_model_list_from_remote_db(url, collection_id, skeleton="", format="mm", 
     data = {"collection_id": collection_id, "skeleton": skeleton, "format":format}
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "get_model_list", data)
+    result_str = call_rest_interface(url, "models", data)
     try:
         result_data = json.loads(result_str)
     except:

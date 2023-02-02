@@ -3,7 +3,7 @@ import os
 import json
 from .common import save_json_file
 from .motion_db_session import MotionDBSession, get_collections_by_parent_id_from_remote_db
-from .model_db_interface import get_model_list_from_remote_db,upload_motion_model_to_remote_db, download_motion_model_from_remote_db, \
+from .model_db_interface import get_model_list_from_remote_db,upload_model_to_remote_db, download_motion_model_from_remote_db, \
                                         delete_model_by_id_from_remote_db, upload_cluster_tree_to_remote_db, \
                                         download_cluster_tree_from_remote_db
 
@@ -17,8 +17,8 @@ class ModelDBSession(MotionDBSession):
     def delete_model(self, model_id):
         return delete_model_by_id_from_remote_db(self.url, model_id, self.session)
 
-    def upload_model(self, name, c_id, skeleton, model_data, config):
-        return upload_motion_model_to_remote_db(self.url, name, c_id, skeleton, model_data, config, self.session)
+    def upload_model(self, name, c_id, skeleton, model_data, config=None, format="mm"):
+        return upload_model_to_remote_db(self.url, name, c_id, skeleton, model_data, config, format, self.session)
 
     def download_model(self, model_id):
         model_data = download_motion_model_from_remote_db(self.url, model_id, self.session)
