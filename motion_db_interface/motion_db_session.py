@@ -111,6 +111,25 @@ def load_motion_data_from_dir(directory, skeleton_model="custom"):
 
 class MotionDBSession(ProjectDBSession):
 
+    def get_collection_id_from_path(self, collection_path):
+        name_list = collection_path.split("/")
+        tree = get_collections_tree_by_parent_id_from_remote_db(self.url,0, self.session)
+        collection_id = self.traverse_tree_by_names(tree, 0, name_list)
+        print("found", collection_id, "using", name_list)
+        return collection_id
+
+    def traverse_tree_by_names(self, tree, parent_id, name_list, query_idx=0):
+        match_id = None
+        if query_idx < len(name_list):
+            for c in tree:
+                if tree[c]["name"] == name_list[query_idx]:
+                    match_id = c
+                    break
+        if match_id is not None:
+            return self.traverse_tree_by_names(tree[match_id]["sub_tree"], match_id,  name_list, query_idx+1)
+        else:
+            return parent_id
+    
 
     def create_new_collection(self,name, col_type, c_id, owner):
         return create_new_collection_in_remote_db(self.url, name, col_type, c_id, owner, self.session)
