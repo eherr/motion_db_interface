@@ -21,8 +21,20 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 # USE OR OTHER DEALINGS IN THE SOFTWARE.
 import requests
+import os
 import bson
 import json
+
+
+def save_json_file(data, file_path, indent=4):
+    with open(file_path, "w") as out_file:
+        return json.dump(data, out_file, indent=indent)
+
+
+def load_json_file(file_path):
+    if os.path.isfile(file_path):
+        with open(file_path, "r") as in_file:
+            return json.load(in_file)
 
 def call_rest_interface(url, method, data):
     method_url = url+method
@@ -44,3 +56,5 @@ def authenticate(url, user, pw):
     except:
         result_data = None
     return result_data
+
+
