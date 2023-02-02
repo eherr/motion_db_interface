@@ -31,8 +31,10 @@ import bz2
 from .common import call_bson_rest_interface, call_rest_interface
 
 
-def get_model_list_from_remote_db(url, collection_id, skeleton="", format="mm", session=None):
-    data = {"collection_id": collection_id, "skeleton": skeleton, "format":format}
+def get_model_list_from_remote_db(url, collection_id, skeleton, model_format=None, session=None):
+    data = {"collection_id": collection_id, "skeleton": skeleton}
+    if model_format is not None:
+        data["format"] = model_format
     if session is not None:
         data.update(session)
     result_str = call_rest_interface(url, "models", data)
@@ -49,13 +51,6 @@ def delete_model_by_id_from_remote_db(url, model_id, session=None):
         data.update(session)
     result_str = call_rest_interface(url, "delete_model", data)
     return result_str
-
-def upload_motion_model_to_remote_db(url, name, collection, skeleton_name, model_data, config, format="mm", session=None):
-    data = {"name":name, "collection": collection, "skeleton_name": skeleton_name,
-            "data": model_data, "config": config, "format":format}
-    if session is not None:
-        data.update(session)
-    call_rest_interface(url, "upload_motion_model", data)
 
 
 def download_motion_model_from_remote_db(url, model_id, session=None):
@@ -135,9 +130,9 @@ def download_graph_from_remote_db(url, graph_id, session=None):
         result_data = None
     return result_data
 
-def upload_model_to_remote_db(url, collection, skeleton_name, name, model_data, config=None, format="mm", session=None):
+def upload_model_to_remote_db(url, collection, skeleton_name, name, model_data, model_format, config=None, session=None):
     data = {"name": name, "collection": collection, "skeleton": skeleton_name,
-            "data": model_data, "format":format}
+            "data": model_data, "format":model_format}
     if config is not None:
         data["config"] = config
     if session is not None:

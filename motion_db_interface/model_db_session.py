@@ -11,14 +11,14 @@ from .model_db_interface import get_model_list_from_remote_db,upload_model_to_re
 
 class ModelDBSession(MotionDBSession):
 
-    def get_model_list(self, c_id, skeleton):
-        return get_model_list_from_remote_db(self.url, c_id, skeleton)
+    def get_model_list(self, c_id, skeleton, model_format=None):
+        return get_model_list_from_remote_db(self.url, c_id, skeleton, model_format)
 
     def delete_model(self, model_id):
         return delete_model_by_id_from_remote_db(self.url, model_id, self.session)
 
-    def upload_model(self, name, c_id, skeleton, model_data, config=None, format="mm"):
-        return upload_model_to_remote_db(self.url, name, c_id, skeleton, model_data, config, format, self.session)
+    def upload_model(self, name, c_id, skeleton, model_data, model_format, config=None):
+        return upload_model_to_remote_db(self.url, name, c_id, skeleton, model_data, config, model_format, self.session)
 
     def download_model(self, model_id):
         model_data = download_motion_model_from_remote_db(self.url, model_id, self.session)
