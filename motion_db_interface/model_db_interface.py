@@ -33,7 +33,7 @@ from .common import call_bson_rest_interface, call_rest_interface, call_binary_r
 
 
 def get_model_list_from_remote_db(url, collection_id, skeleton, model_format=None, session=None):
-    data = {"collection_id": collection_id, "skeleton": skeleton}
+    data = {"collection": collection_id, "skeleton": skeleton}
     if model_format is not None:
         data["format"] = model_format
     if session is not None:
