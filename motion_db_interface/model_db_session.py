@@ -3,11 +3,11 @@ import os
 import json
 from .common import save_json_file
 from .motion_db_session import MotionDBSession, get_collections_by_parent_id_from_remote_db
-from .model_db_interface import get_model_list_from_remote_db,upload_model_to_remote_db, download_motion_model_from_remote_db, \
+from .model_db_interface import get_model_list_from_remote_db,upload_model_to_remote_db, download_model_from_remote_db, download_motion_model_from_remote_db, \
                                         delete_model_by_id_from_remote_db, upload_cluster_tree_to_remote_db, \
                                         download_cluster_tree_from_remote_db
 
-
+from .experiment_db_interface import get_experiment_list, get_experiment_log, remove_experiment
 
 class ModelDBSession(MotionDBSession):
 
@@ -21,14 +21,18 @@ class ModelDBSession(MotionDBSession):
         return upload_model_to_remote_db(self.url, name, c_id, skeleton, model_data, config, model_format, self.session)
 
     def download_model(self, model_id):
+        model_data = download_model_from_remote_db(self.url, model_id, self.session)
+        return model_data
+
+    def download_motion_model(self, model_id):
         model_data = download_motion_model_from_remote_db(self.url, model_id, self.session)
         return model_data
 
-    def download_model_meta_data(self, model_id):
+    def download_cluster_tree(self, model_id):
         meta_data = download_cluster_tree_from_remote_db(self.url, model_id, self.session)
         return meta_data
 
-    def upload_model_meta_data(self, model_id, meta_data):
+    def upload_cluster_tree(self, model_id, meta_data):
         return upload_cluster_tree_to_remote_db(self.url, model_id, meta_data, self.session)
 
     def export_database_of_skeleton_to_directory(self, directory, skeleton_name):
@@ -62,3 +66,11 @@ class ModelDBSession(MotionDBSession):
                 with open(out_dir+ os.sep + name + "_cluster_tree.json", "w+") as out_file:
                     out_file.write(json.dumps(cluster_tree_data))
 
+    def get_experiment_list(self, collection_id, skeleton):
+        return get_experiment_list(self.url, collection_id, skeleton)
+
+    def get_experiment_log(self, experiment_id):
+        return get_experiment_log(self.url, experiment_id)
+
+    def remove_experiment(self, experiment_id):
+        return remove_experiment(self.url, experiment_id)

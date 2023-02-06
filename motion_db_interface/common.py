@@ -46,6 +46,10 @@ def call_bson_rest_interface(url, method, data):
     r = requests.post(method_url, data=json.dumps(data), verify=False)
     return r.content
 
+def call_binary_rest_interface(url, method, data):
+    method_url = url+method
+    r = requests.post(method_url, data=json.dumps(data), verify=False)
+    return r.content
 
 
 def authenticate(url, user, pw):

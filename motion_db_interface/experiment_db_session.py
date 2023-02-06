@@ -55,14 +55,14 @@ class ExperimentDBSession:
     def get_log(self):
         return get_experiment_log(self.url, self.experiment_id)
 
-    def store_model(self, model_data, format="mm"):
+    def store_model(self, model_data, model_format):
         if self.session is None or self.experiment_id is None:
             return
         name = self.experiment_name
         model_data = base64.b64encode(model_data)
         model_data = model_data.decode()
         if self.model_id is None:
-            result = upload_model_to_remote_db(self.url, self.collection_id, self.skeleton_name, name, model_data, format=format, session=self.session)
+            result = upload_model_to_remote_db(self.url, self.collection_id, self.skeleton_name, name, model_data, model_format=model_format, session=self.session)
             if result is not None and "id" in result:
                 self.model_id = result["id"]
                 data = {"model": self.model_id}

@@ -17,8 +17,10 @@ def add_experiment(url, name, project, collection, skeleton_name, config, sessio
         result_data = None
     return result_data
 
-def get_experiment_list(url, collection_id, skeleton="", session=None):
-    data = {"collection": collection_id, "skeleton": skeleton}
+def get_experiment_list(url, collection_id, skeleton=None, session=None):
+    data = {"collection": collection_id}
+    if skeleton is not None:
+        data["skeleton"] = skeleton
     if session is not None:
         data.update(session)
     result_str = call_rest_interface(url, "experiments", data)
@@ -63,3 +65,4 @@ def get_experiment_log(url, experiment_id, session=None):
     result_str = call_rest_interface(url, "experiments/log", data)
     result_data = json.loads(result_str)
     return result_data
+

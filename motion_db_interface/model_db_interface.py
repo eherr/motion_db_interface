@@ -28,7 +28,8 @@ Created on Mon Jun 20 2017
 import json
 import bson
 import bz2
-from .common import call_bson_rest_interface, call_rest_interface
+from .common import call_bson_rest_interface, call_rest_interface, call_binary_rest_interface
+
 
 
 def get_model_list_from_remote_db(url, collection_id, skeleton, model_format=None, session=None):
@@ -162,4 +163,12 @@ def replace_model_in_remote_db(url, model_id,  model_data, session=None):
         result_data = json.loads(result_str)
     except:
         result_data = None
+    return result_data
+
+
+def download_model_from_remote_db(url, model_id, session=None):
+    data = {"model_id": model_id}
+    if session is not None:
+        data.update(session)
+    result_data = call_binary_rest_interface(url, "models/download", data)
     return result_data
