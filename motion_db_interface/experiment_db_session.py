@@ -52,8 +52,10 @@ class ExperimentDBSession:
             return
         append_experiment_log(self.url, self.experiment_id, log_entry, session=self.session)
 
-    def get_log(self):
-        return get_experiment_log(self.url, self.experiment_id)
+    def get_log(self, experiment_id=None):
+        if experiment_id is None:
+            experiment_id = self.experiment_id
+        return get_experiment_log(self.url, experiment_id)
 
     def store_model(self, model_data, model_format):
         if self.session is None or self.experiment_id is None:
