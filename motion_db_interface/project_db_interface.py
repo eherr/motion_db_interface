@@ -19,32 +19,21 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 # USE OR OTHER DEALINGS IN THE SOFTWARE.
-import json
-from .common import call_bson_rest_interface, call_rest_interface
+from .common import call_json_rest_interface
 
 
 def get_project_list(url, session=None):
     data = dict()
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "projects", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
-    return result_data
+    return call_json_rest_interface(url, "projects", data)
 
 def get_project_info(url, project_id, session=None):
     data = dict()
     data["project_id"] = project_id
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "projects/info", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
-    return result_data
+    return call_json_rest_interface(url, "projects/info", data)
 
 def add_new_project(url, name, is_public, session=None):
     data = dict()
@@ -52,12 +41,7 @@ def add_new_project(url, name, is_public, session=None):
     data["is_public"] = is_public
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "projects/add", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
-    return result_data
+    return call_json_rest_interface(url, "projects/add", data)
 
 def edit_project(url, project_id, name, is_public, session=None):
     data = dict()
@@ -66,21 +50,11 @@ def edit_project(url, project_id, name, is_public, session=None):
     data["is_public"] = is_public
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "projects/edit", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
-    return result_data
+    return call_json_rest_interface(url, "projects/edit", data)
 
 def remove_project(url, project_id, session=None):
     data = dict()
     data["project_id"] = project_id
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "projects/remove", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
-    return result_data
+    return call_json_rest_interface(url, "projects/remove", data)

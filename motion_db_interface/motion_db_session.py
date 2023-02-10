@@ -112,6 +112,14 @@ def load_motion_data_from_dir(directory, skeleton_model="custom"):
 class MotionDBSession(ProjectDBSession):
 
     def get_collection_id_from_path(self, collection_path):
+        """Return the ID corresponding to the collection at the path
+
+        Args:
+            collection_path (_type_): a string separated by "/", e.g. INTERACT/walk/left_step
+
+        Returns:
+            int: ID of collection
+        """
         name_list = collection_path.split("/")
         tree = get_collections_tree_by_parent_id_from_remote_db(self.url,0, self.session)
         collection_id = self.traverse_tree_by_names(tree, 0, name_list)

@@ -20,43 +20,27 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 # USE OR OTHER DEALINGS IN THE SOFTWARE.
-import json
 from anim_utils.animation_data import SkeletonBuilder
-from .common import call_bson_rest_interface, call_rest_interface
+from .common import call_json_rest_interface
 
 
 def get_skeleton_from_remote_db(url, skeleton_type, session=None):
     data = {"skeleton_type": skeleton_type}
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "get_skeleton", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
-    return result_data
+    return call_json_rest_interface(url, "get_skeleton", data)
 
 
 def get_skeleton_model_from_remote_db(url, skeleton_type, session=None):
     data = {"skeleton_type": skeleton_type}
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "get_skeleton_model", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
-    return result_data
+    return call_json_rest_interface(url, "get_skeleton_model", data)
 
 
 def get_skeletons_from_remote_db(url, session=None):
     data = {}
-    result_str = call_rest_interface(url, "get_skeleton_list", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
-    return result_data
+    return call_json_rest_interface(url, "get_skeleton_list", data)
 
 
 def create_new_skeleton_in_db(url, name, skeleton_data, meta_data, session=None):
@@ -65,7 +49,7 @@ def create_new_skeleton_in_db(url, name, skeleton_data, meta_data, session=None)
         data["meta_data"] = meta_data
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "create_new_skeleton", data)
+    return call_json_rest_interface(url, "create_new_skeleton", data)
 
 
 def replace_skeleton_in_remote_db(url, name, skeleton_data, meta_data, session=None):
@@ -77,14 +61,14 @@ def replace_skeleton_in_remote_db(url, name, skeleton_data, meta_data, session=N
         data["meta_data"] = meta_data
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "replace_skeleton", data)
+    return call_json_rest_interface(url, "replace_skeleton", data)
 
 
 def delete_skeleton_from_remote_db(url, name, session=None):
     data = {"name": name}
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "remove_skeleton", data)
+    return call_json_rest_interface(url, "remove_skeleton", data)
 
 
 def load_skeleton_from_db(db_url, skeleton_name, session=None):

@@ -23,7 +23,7 @@ class ModelDBSession(MotionDBSession):
         return get_experiment_list(self.url, collection_id, skeleton)
 
     def get_experiment_log(self, experiment_id):
-        return get_experiment_log(self.url, experiment_id)
+        return get_experiment_log(self.url, experiment_id, self.session)
 
     def remove_experiment(self, experiment_id):
-        return remove_experiment(self.url, experiment_id)
+        return remove_experiment(self.url, experiment_id, self.session)

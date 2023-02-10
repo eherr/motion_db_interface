@@ -24,6 +24,7 @@ import requests
 import os
 import bson
 import json
+import bz2
 
 
 def save_json_file(data, file_path, indent=4):
@@ -41,24 +42,33 @@ def call_rest_interface(url, method, data):
     r = requests.post(method_url, data=json.dumps(data), verify=False)
     return r.text
 
-def call_bson_rest_interface(url, method, data):
-    method_url = url+method
-    r = requests.post(method_url, data=json.dumps(data), verify=False)
-    return r.content
+def call_json_rest_interface(url, method, data):
+    result_str = call_rest_interface(url, method, data)
+    try:
+        result_data = json.loads(result_str)
+    except:
+        result_data = None
+    return result_data
 
 def call_binary_rest_interface(url, method, data):
     method_url = url+method
     r = requests.post(method_url, data=json.dumps(data), verify=False)
     return r.content
 
-
-def authenticate(url, user, pw):
-    data = {"username": user, "password": pw}
-    result_str = call_rest_interface(url, "authenticate", data)
+def call_bson_rest_interface(url, method, data):
+    result_str = call_binary_rest_interface(url, method, data)
     try:
-        result_data = json.loads(result_str)
+        result_str = bz2.decompress(result_str)
+        result_data = bson.loads(result_str)
     except:
         result_data = None
     return result_data
+    
+
+def authenticate(url, user, pw):
+    data = {"username": user, "password": pw}
+    result_data = call_json_rest_interface(url, "authenticate", data)
+    return result_data
+
 
 

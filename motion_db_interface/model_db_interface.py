@@ -25,8 +25,7 @@ Created on Mon Jun 20 2017
 
 @author: Erik Herrmann
 """
-import json
-from .common import call_bson_rest_interface, call_rest_interface, call_binary_rest_interface
+from .common import call_json_rest_interface, call_binary_rest_interface
 
 
 
@@ -36,11 +35,7 @@ def get_model_list_from_remote_db(url, collection_id, skeleton, model_format=Non
         data["format"] = model_format
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "models", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
+    result_data = call_json_rest_interface(url, "models", data)
     return result_data
 
 
@@ -48,11 +43,7 @@ def delete_model_by_id_from_remote_db(url, model_id, session=None):
     data = {"model_id": model_id}
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "delete_model", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
+    result_data = call_json_rest_interface(url, "models/remove", data)
     return result_data
 
 
@@ -63,11 +54,7 @@ def upload_model_to_remote_db(url, collection, skeleton_name, name, model_data, 
         data["config"] = config
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "models/add", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
+    result_data = call_json_rest_interface(url, "models/add", data)
     return result_data
     
 def replace_model_in_remote_db(url, model_id,  model_data, session=None):
@@ -75,11 +62,7 @@ def replace_model_in_remote_db(url, model_id,  model_data, session=None):
             "data": model_data}
     if session is not None:
         data.update(session)
-    result_str = call_rest_interface(url, "models/replace", data)
-    try:
-        result_data = json.loads(result_str)
-    except:
-        result_data = None
+    result_data = call_json_rest_interface(url, "models/replace", data)
     return result_data
 
 
