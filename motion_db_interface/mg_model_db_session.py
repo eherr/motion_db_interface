@@ -3,7 +3,7 @@ import os
 import json
 from .common import save_json_file
 from .motion_db_interface import get_collections_by_parent_id_from_remote_db
-from .model_db_session import ModelDBSession
+from .model_db_session import ModelDBSession, get_model_list_from_remote_db
 from .mg_model_db_interface import download_motion_model_from_remote_db, \
                                          upload_cluster_tree_to_remote_db, \
                                         download_cluster_tree_from_remote_db

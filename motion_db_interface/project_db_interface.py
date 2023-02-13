@@ -24,37 +24,27 @@ from .common import call_json_rest_interface
 
 def get_project_list(url, session=None):
     data = dict()
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "projects", data)
+    return call_json_rest_interface(url, "projects", data, session)
 
 def get_project_info(url, project_id, session=None):
     data = dict()
     data["project_id"] = project_id
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "projects/info", data)
+    return call_json_rest_interface(url, "projects/info", data, session)
 
 def add_new_project(url, name, is_public, session=None):
     data = dict()
     data["name"] = name
     data["is_public"] = is_public
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "projects/add", data)
+    return call_json_rest_interface(url, "projects/add", data, session)
 
 def edit_project(url, project_id, name, is_public, session=None):
     data = dict()
     data["project_id"] = project_id
     data["name"] = name
     data["is_public"] = is_public
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "projects/edit", data)
+    return call_json_rest_interface(url, "projects/edit", data, session)
 
 def remove_project(url, project_id, session=None):
     data = dict()
     data["project_id"] = project_id
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "projects/remove", data)
+    return call_json_rest_interface(url, "projects/remove", data, session)

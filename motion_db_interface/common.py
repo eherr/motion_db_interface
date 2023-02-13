@@ -25,6 +25,7 @@ import os
 import bson
 import json
 import bz2
+VERIFIY = False
 
 
 def save_json_file(data, file_path, indent=4):
@@ -37,26 +38,30 @@ def load_json_file(file_path):
         with open(file_path, "r") as in_file:
             return json.load(in_file)
 
-def call_rest_interface(url, method, data):
+def call_rest_interface(url, method, data, session=None):
+    if session is not None:
+        data.update(session)
     method_url = url+method
-    r = requests.post(method_url, data=json.dumps(data), verify=False)
+    r = requests.post(method_url, data=json.dumps(data), verify=VERIFIY)
     return r.text
 
-def call_json_rest_interface(url, method, data):
-    result_str = call_rest_interface(url, method, data)
+def call_json_rest_interface(url, method, data, session=None):
+    result_str = call_rest_interface(url, method, data, session=session)
     try:
         result_data = json.loads(result_str)
     except:
         result_data = None
     return result_data
 
-def call_binary_rest_interface(url, method, data):
+def call_binary_rest_interface(url, method, data, session=None):
+    if session is not None:
+        data.update(session)
     method_url = url+method
-    r = requests.post(method_url, data=json.dumps(data), verify=False)
+    r = requests.post(method_url, data=json.dumps(data), verify=VERIFIY)
     return r.content
 
-def call_bson_rest_interface(url, method, data):
-    result_str = call_binary_rest_interface(url, method, data)
+def call_bson_rest_interface(url, method, data, session=None):
+    result_str = call_binary_rest_interface(url, method, data, session)
     try:
         result_str = bz2.decompress(result_str)
         result_data = bson.loads(result_str)
@@ -70,5 +75,8 @@ def authenticate(url, user, pw):
     result_data = call_json_rest_interface(url, "authenticate", data)
     return result_data
 
-
-
+class DBSession:
+    def __init__(self, db_url, session):
+        self.url = db_url
+        self.session = session
+        

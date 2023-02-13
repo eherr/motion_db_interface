@@ -1,10 +1,8 @@
 
+from .common import DBSession
 from .project_db_interface import get_project_list, get_project_info, add_new_project, edit_project, remove_project
 
-class ProjectDBSession:
-    def __init__(self, db_url, session):
-        self.url = db_url
-        self.session = session
+class ProjectDBSession(DBSession):
 
     def get_project_list(self):
         return get_project_list(self.url, session=self.session)

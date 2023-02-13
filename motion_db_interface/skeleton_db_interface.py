@@ -26,30 +26,24 @@ from .common import call_json_rest_interface
 
 def get_skeleton_from_remote_db(url, skeleton_type, session=None):
     data = {"skeleton_type": skeleton_type}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "get_skeleton", data)
+    return call_json_rest_interface(url, "get_skeleton", data, session)
 
 
 def get_skeleton_model_from_remote_db(url, skeleton_type, session=None):
     data = {"skeleton_type": skeleton_type}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "get_skeleton_model", data)
+    return call_json_rest_interface(url, "get_skeleton_model", data, session)
 
 
 def get_skeletons_from_remote_db(url, session=None):
     data = {}
-    return call_json_rest_interface(url, "get_skeleton_list", data)
+    return call_json_rest_interface(url, "get_skeleton_list", data, session)
 
 
 def create_new_skeleton_in_db(url, name, skeleton_data, meta_data, session=None):
     data = {"name": name, "data": skeleton_data}
     if meta_data is not None:
         data["meta_data"] = meta_data
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "create_new_skeleton", data)
+    return call_json_rest_interface(url, "create_new_skeleton", data, session)
 
 
 def replace_skeleton_in_remote_db(url, name, skeleton_data, meta_data, session=None):
@@ -59,16 +53,12 @@ def replace_skeleton_in_remote_db(url, name, skeleton_data, meta_data, session=N
         data["data"] = skeleton_data
     if meta_data is not None:
         data["meta_data"] = meta_data
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "replace_skeleton", data)
+    return call_json_rest_interface(url, "replace_skeleton", data, session)
 
 
 def delete_skeleton_from_remote_db(url, name, session=None):
     data = {"name": name}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "remove_skeleton", data)
+    return call_json_rest_interface(url, "remove_skeleton", data, session)
 
 
 def load_skeleton_from_db(db_url, skeleton_name, session=None):

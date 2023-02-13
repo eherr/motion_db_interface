@@ -36,16 +36,12 @@ from .common import call_bson_rest_interface, call_binary_rest_interface, call_j
 def upload_motion_model_to_remote_db(url, name, collection, skeleton_name, model_data, config, session=None):
     data = {"name":name, "collection": collection, "skeleton_name": skeleton_name,
             "data": model_data, "config": config, "format":"mm"}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "upload_motion_model", data)
+    return call_json_rest_interface(url, "upload_motion_model", data, session)
 
 
 def download_motion_model_from_remote_db(url, model_id, session=None):
     data = {"model_id": model_id}
-    if session is not None:
-        data.update(session)
-    result_str= call_binary_rest_interface(url, "download_motion_model", data)
+    result_str= call_binary_rest_interface(url, "download_motion_model", data, session)
     try:
         result_str = bz2.decompress(result_str)
         result_data = bson.loads(result_str)
@@ -56,15 +52,11 @@ def download_motion_model_from_remote_db(url, model_id, session=None):
 
 def upload_cluster_tree_to_remote_db(url, model_id, cluster_tree_data, session=None):
     data = {"model_id": model_id, "cluster_tree_data": cluster_tree_data}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "upload_cluster_tree", data)
+    return call_json_rest_interface(url, "upload_cluster_tree", data, session)
 
 def download_cluster_tree_from_remote_db(url, model_id, session=None):
     data = {"model_id": model_id}
-    if session is not None:
-        data.update(session)
-    result_str= call_binary_rest_interface(url, "download_cluster_tree", data)
+    result_str= call_binary_rest_interface(url, "download_cluster_tree", data, session)
     try:
         result_str = bz2.decompress(result_str)
         result_data = bson.loads(result_str)
@@ -81,29 +73,21 @@ def get_graph_list_from_db(url, skeleton, session=None):
 
 def create_new_graph_in_db(url, name, skeleton, graph_data, session=None):
     data = {"name": name, "skeleton": skeleton, "data": graph_data}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "upload_graph", data)
+    return call_json_rest_interface(url, "upload_graph", data, session)
 
 def replace_graph_in_remote_db(url, graph_id, name, skeleton, graph_data, session=None):
     data = {"id":graph_id,"name": name, "skeleton": skeleton, "data": graph_data}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "replace_graph", data)
+    return call_json_rest_interface(url, "replace_graph", data, session)
 
 
 def delete_graph_from_remote_db(url, graph_id, session=None):
     data = {"id": graph_id}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "remove_graph", data)
+    return call_json_rest_interface(url, "remove_graph", data, session)
 
 
 def download_graph_from_remote_db(url, graph_id, session=None):
     data = {"id": graph_id}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "download_graph", data)
+    return call_json_rest_interface(url, "download_graph", data, session)
 
 
     

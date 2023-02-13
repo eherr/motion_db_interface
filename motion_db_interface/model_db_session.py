@@ -1,10 +1,11 @@
 from .motion_db_session import MotionDBSession
+from .model_type_db_session import ModelTypeDBSession
 from .model_db_interface import get_model_list_from_remote_db,upload_model_to_remote_db, download_model_from_remote_db, \
                                         delete_model_by_id_from_remote_db
 
 from .experiment_db_interface import get_experiment_list, get_experiment_log, remove_experiment
 
-class ModelDBSession(MotionDBSession):
+class ModelDBSession(MotionDBSession, ModelTypeDBSession):
 
     def get_model_list(self, c_id, skeleton, model_format=None):
         return get_model_list_from_remote_db(self.url, c_id, skeleton, model_format)

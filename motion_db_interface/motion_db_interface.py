@@ -39,44 +39,34 @@ from anim_utils.animation_data.bvh import convert_quaternion_to_euler_frames, ge
 
 def get_bvh_str_by_id_from_remote_db(url, clip_id, session=None):
     data = {"clip_id": clip_id}
-    if session is not None:
-        data.update(session)
-    result_str = call_rest_interface(url, "download_motion", data)
+    result_str = call_rest_interface(url, "download_motion", data, session)
     return result_str
 
 
 def get_motion_by_id_from_remote_db(url, clip_id, is_processed=False, session=None):
     
     data = {"clip_id": clip_id, "is_processed": int(is_processed)}
-    if session is not None:
-        data.update(session)
     print("get motion", data)
-    result_data = call_bson_rest_interface(url, "get_motion", data)
+    result_data = call_bson_rest_interface(url, "get_motion", data, session)
     return result_data
 
 
 def get_annotation_by_id_from_remote_db(url, clip_id, is_processed=False, session=None):
     data = {"clip_id": clip_id, "is_processed": int(is_processed)}
-    if session is not None:
-        data.update(session)
-    result_str = call_rest_interface(url, "download_annotation", data)
+    result_str = call_rest_interface(url, "download_annotation", data, session)
     return result_str
 
 
 
 def get_time_function_by_id_from_remote_db(url, clip_id, session=None):
     data = {"clip_id": clip_id}
-    if session is not None:
-        data.update(session)
-    result_str = call_rest_interface(url, "get_time_function", data)
+    result_str = call_rest_interface(url, "get_time_function", data, session)
     return result_str
 
 
 def get_motion_list_from_remote_db(url, collection_id, skeleton="", is_processed=False, session=None):
     data = {"collection_id": collection_id, "skeleton": skeleton, "is_processed":int(is_processed)}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "get_motion_list", data)
+    return call_json_rest_interface(url, "get_motion_list", data, session)
 
 
 N_MAX_SIZE = 200000
@@ -105,67 +95,48 @@ def upload_motion_to_db(url, name, motion_data, collection, skeleton_name, meta_
         data["part_idx"] = idx
         data["n_parts"] = len(parts)
         data["is_processed"] = is_processed
-        if session is not None:
-            data.update(session)
-        result_text = call_rest_interface(url, "upload_motion", data)
+        result_text = call_rest_interface(url, "upload_motion", data, session)
 
 def upload_bvh_to_db(url, name, bvh_str, collection, skeleton_model, meta_info, time_function=None, session=None):
     data = {"bvh_str": bvh_str, "name": name, 
             "skeleton_name": skeleton_model, "meta_info": meta_info, 
             "collection": collection}
-
-    if session is not None:
-        data.update(session)
     if time_function is not None:
         data["is_aligned"] = 1
         data["time_function"] = time_function
     else:
         data["is_aligned"] = 0
         data["time_function"] = ""
-    return call_json_rest_interface(url, "upload_motion", data)
+    return call_json_rest_interface(url, "upload_motion", data, session)
 
 def delete_motion_by_id_from_remote_db(url, clip_id, is_processed=False, session=None):
     data = {"clip_id": clip_id, "is_processed": int(is_processed)}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "delete_motion", data)
+    return call_json_rest_interface(url, "delete_motion", data, session)
 
 def create_new_collection_in_remote_db(url, name, col_type, parent_id, owner, session=None):
     data = {"name": name, "type": col_type, "parent_id": parent_id, "owner": owner}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "create_new_collection", data)
+    return call_json_rest_interface(url, "create_new_collection", data, session)
 
 def replace_collection_in_remote_db(url, collection_id, name, col_type, parent_id, owner, session=None):
     data = {"id": collection_id ,"name": name, "type": col_type, "parent": parent_id, "owner": owner}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "replace_collection", data)
+    return call_json_rest_interface(url, "replace_collection", data, session)
 
 def get_collection_by_id(url, collection_id, session=None):
     data = {"id": collection_id}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "get_collection", data)
+    return call_json_rest_interface(url, "get_collection", data, session)
 
 
 def get_collections_from_remote_db(url, parent_name="", collection_type="", session=None):
     data = {"parent_name": parent_name, "type": collection_type}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "get_collection_list", data)
+    return call_json_rest_interface(url, "get_collection_list", data, session)
 
 def get_collections_by_parent_id_from_remote_db(url, parent_id, session=None):
     data = {"parent_id": parent_id}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "get_collection_list", data)
+    return call_json_rest_interface(url, "get_collection_list", data, session)
 
 def get_collections_tree_by_parent_id_from_remote_db(url, parent_id, session=None):
     data = {"parent_id": parent_id}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "get_collection_tree", data)
+    return call_json_rest_interface(url, "get_collection_tree", data, session)
 
 def delete_collection_from_remote_db(url, col_id, session=None):
     data = {"id": col_id}
@@ -322,10 +293,8 @@ def retarget_motion_in_db(db_url, retargeting, motion_id, motion_name, collectio
 def start_cluster_job(url, imagename, job_name, job_desc, resources, session=None):
     data = {"imagename": imagename, "job_name": job_name,
             "job_desc": job_desc, "resources": resources}
-    if session is not None:
-        data.update(session)
-    return call_json_rest_interface(url, "start_cluster_job", data)
+    return call_json_rest_interface(url, "start_cluster_job", data, session)
 
-def get_motion_list_by_name(url, name, exact_match):
+def get_motion_list_by_name(url, name, exact_match, session=None):
     data = {"name": name, "exact_match": exact_match}
-    return call_json_rest_interface(url, "get_motion_list_by_name", data)
+    return call_json_rest_interface(url, "get_motion_list_by_name", data, session)

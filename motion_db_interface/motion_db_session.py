@@ -115,7 +115,7 @@ class MotionDBSession(ProjectDBSession):
         """Return the ID corresponding to the collection at the path
 
         Args:
-            collection_path (_type_): a string separated by "/", e.g. INTERACT/walk/left_step
+            collection_path (str): a string separated by "/", e.g. INTERACT/walk/left_step
 
         Returns:
             int: ID of collection
