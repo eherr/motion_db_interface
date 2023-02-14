@@ -7,7 +7,7 @@ from .model_db_session import ModelDBSession, get_model_list_from_remote_db
 from .mg_model_db_interface import download_motion_model_from_remote_db, \
                                          upload_cluster_tree_to_remote_db, \
                                         download_cluster_tree_from_remote_db
-from .mg_model_db_interface import get_graph_list_from_db, delete_graph_from_remote_db, download_graph_from_remote_db, create_new_graph_in_db, replace_graph_in_remote_db
+
 
 class MGModelDBSession(ModelDBSession):
 
@@ -52,20 +52,3 @@ class MGModelDBSession(ModelDBSession):
             if cluster_tree_data is not None:
                 with open(out_dir+ os.sep + name + "_cluster_tree.json", "w+") as out_file:
                     out_file.write(json.dumps(cluster_tree_data))
-
-        
-    def get_graph_list(self, skeleton):
-        return get_graph_list_from_db(self.url, skeleton)
-
-    def delete_graph(self, model_id):
-        return delete_graph_from_remote_db(self.url, model_id, self.session)
-
-    def upload_graph(self, name, skeleton, graph_data):
-        return create_new_graph_in_db(self.url, name, skeleton, graph_data, self.session)
-
-    def download_graph(self, graph_id):
-        meta_data = download_graph_from_remote_db(self.url, graph_id, self.session)
-        return meta_data
-
-    def replace_graph(self, graph_id, name, skeleton, graph_data):
-        return replace_graph_in_remote_db(self.url, graph_id, name, skeleton, graph_data, self.session)
