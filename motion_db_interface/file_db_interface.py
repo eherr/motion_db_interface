@@ -97,3 +97,36 @@ def remove_data_loader(url, data_type, engine, session=None):
 def get_data_loader_info(url, data_type, engine, session=None):
     data = {"data_type": data_type, "engine":engine}
     return call_json_rest_interface(url, "data_loaders/info", data, session)
+
+def get_tag_list(url, session=None):
+    data = {}
+    return call_json_rest_interface(url, "tags", data, session)
+
+def add_tag(url,  tag, session=None):
+    data = {"tag":tag}
+    return call_json_rest_interface(url, "tags/add", data, session)
+
+def rename_tag(url, old_tag, new_tag, session=None):
+    data = {"old_tag":old_tag, "new_tag": new_tag}
+    return call_json_rest_interface(url, "tags/rename", data, session)
+
+def remove_tag(url,  tag, session=None):
+    data = {"tag":tag}
+    return call_json_rest_interface(url, "tags/remove", data, session)
+
+def get_data_type_tags(url, data_type, session=None):
+    data = {"data_type": data_type}
+    return call_json_rest_interface(url, "data_types/tags", data, session)
+
+def add_data_type_tag(url, data_type, tag, session=None):
+    data = {"data_type": data_type, "tag":tag}
+    return call_json_rest_interface(url, "data_types/tags", data, session)
+
+def remove_data_type_tag(url, data_type, tag, session=None):
+    data = {"data_type": data_type, "tag":tag}
+    return call_json_rest_interface(url, "data_loaders/remove", data, session)
+
+def remove_all_data_type_tags(url, data_type, session=None):
+    data = {"data_type": data_type}
+    return call_json_rest_interface(url, "data_loaders/removeall", data, session)
+

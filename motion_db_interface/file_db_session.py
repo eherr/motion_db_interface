@@ -2,6 +2,8 @@ from .common import DBSession
 from .file_db_interface import add_data_type, get_data_types, get_data_type_info, remove_data_type, edit_data_type
 from .file_db_interface import get_data_loaders, add_data_loader, edit_data_loader, remove_data_loader, get_data_loader_info
 from .file_db_interface import get_file_list, delete_file_by_id, upload_file, upload_file, download_file
+from .file_db_interface import get_tag_list, add_tag, rename_tag, remove_tag
+from .file_db_interface import get_data_type_tags, add_data_type_tag, remove_data_type_tag, remove_all_data_type_tags
 
 
 class FileDBSession(DBSession):
@@ -48,5 +50,29 @@ class FileDBSession(DBSession):
 
     def get_data_loader_info(self, data_type, engine):
         return get_data_loader_info(self.url, data_type, engine, session=self.session)
+
+    def get_tag_list(self):
+        return get_tag_list(self.url, session=self.session)
+    
+    def add_tag(self, tag):
+        return add_tag(self.url, tag, session=self.session)
+
+    def rename_tag(self, old_tag, new_tag):
+        return rename_tag(self.url, old_tag, new_tag, session=self.session)
+    
+    def remove_tag(self, tag):
+        return remove_tag(self.url, tag, session=self.session)
+    
+    def get_data_type_tags(self, data_type):
+        return get_data_type_tags(self.url, data_type, session=self.session)
+    
+    def add_data_type_tag(self, data_type, tag):
+        return add_data_type_tag(self.url, data_type, tag, session=self.session)
+   
+    def remove_data_type_tag(self, data_type, tag):
+        return remove_data_type_tag(self.url, data_type, tag, session=self.session)
+    
+    def remove_data_type_tags(self, data_type):
+        return remove_all_data_type_tags(self.url, data_type, session=self.session)
 
 
