@@ -11,13 +11,13 @@ class ModelGraphSession(DBSession):
     def create_new_graph(self):
         return create_new_graph_in_db(self.url, session=self.session)
     
-    def replace_graph(self, model_type, data):
-        return replace_graph_in_remote_db(self.url, model_type, data, session=self.session)
+    def replace_graph(self, data_type, data):
+        return replace_graph_in_remote_db(self.url, data_type, data, session=self.session)
 
-    def delete_graph(self, model_type):
-        return delete_graph_from_remote_db(self.url, model_type, session=self.session)
+    def delete_graph(self, data_type):
+        return delete_graph_from_remote_db(self.url, data_type, session=self.session)
 
-    def download_graph(self, model_type):
-        return download_graph_from_remote_db(self.url, model_type, session=self.session)
+    def download_graph(self, data_type):
+        return download_graph_from_remote_db(self.url, data_type, session=self.session)
 
 
