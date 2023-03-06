@@ -43,7 +43,7 @@ class ExperimentDBSession:
         params = json.loads(params)
         result = add_experiment(self.url, exp_name, self.project_id, self.collection_id, self.skeleton_name, params, self.session)
         self.experiment_name = exp_name
-        if "id" in result:
+        if result is not None and "id" in result:
             self.experiment_id = result["id"]
         
     def append_log(self, log_entry):
@@ -67,7 +67,7 @@ class ExperimentDBSession:
             result = upload_model_to_remote_db(self.url, self.collection_id, self.skeleton_name, name, model_data, model_format=model_format, session=self.session)
             if result is not None and "id" in result:
                 self.model_id = result["id"]
-                data = {"model": self.model_id}
+                data = {"output": self.model_id}
                 edit_experiment(self.url, self.experiment_id, data, session=self.session)
         else:
             result = replace_model_in_remote_db(self.url, self.model_id, model_data, session=self.session)
