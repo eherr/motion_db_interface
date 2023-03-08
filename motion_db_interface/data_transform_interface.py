@@ -35,10 +35,11 @@ def get_data_transform_inputs(url, data_transform_id, session=None):
     result_data = call_json_rest_interface(url, "data_transforms/inputs", data, session)
     return result_data
 
-def run_data_transform(url, data_transform_id, exp_name, skeleton, output_id, input_data, parameters, store_log, session=None):
+def run_data_transform(url, data_transform_id, exp_name, input_skeleton, output_id, input_data, output_skeleton, parameters, store_log, session=None):
     data = dict()
     data["data_transform_id"] = data_transform_id
-    data["skeleton_type"] = skeleton
+    data["input_skeleton"] = input_skeleton
+    data["output_skeleton"] = output_skeleton
     data["output_id"] = output_id
     data["input_data"] = input_data
     data["exp_name"] = exp_name
