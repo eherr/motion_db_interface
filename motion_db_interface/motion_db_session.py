@@ -1,12 +1,16 @@
 
 import os
 import json
+import bson
+import bz2
+import json
 import glob
 import collections
 from anim_utils.animation_data import MotionVector
 from .skeleton_db_interface import get_skeleton_model_from_remote_db, delete_skeleton_from_remote_db, replace_skeleton_in_remote_db, get_skeletons_from_remote_db, create_new_skeleton_in_db, load_skeleton_from_db, get_skeleton_from_remote_db
 from .motion_db_interface import delete_motion_by_id_from_remote_db, replace_motion_in_db,get_collections_tree_by_parent_id_from_remote_db, create_new_collection_in_remote_db, replace_collection_in_remote_db, delete_collection_from_remote_db, get_collections_by_parent_id_from_remote_db, upload_motion_to_db, get_bvh_string, get_motion_list_from_remote_db, get_motion_by_id_from_remote_db, get_annotation_by_id_from_remote_db, get_time_function_by_id_from_remote_db
 from .project_db_session import ProjectDBSession
+from .file_db_interface import get_file_list, download_file
 
 
 def create_sections_from_annotation(annotations):
@@ -205,23 +209,11 @@ class MotionDBSession(ProjectDBSession):
             col_id, col_name, col_type, owner = col
             action_dir = out_dir+os.sep+col_name
             if model_filter is None or col_name in model_filter:
-                self.export_collection_clips_to_folder(col_id, skeleton_name, action_dir, is_aligned=0)
+                self.export_collection_clips_to_folder(col_id, skeleton_name, action_dir)
             self.export_raw_motion_data(skeleton_name, action_dir, col_id)
     
 
-    def export_processed_motion_data(self, skeleton_name, out_dir, parent=0, model_filter=None):
-        for col in get_collections_by_parent_id_from_remote_db(self.url, parent):
-            print(col)
-            col_id, col_name, col_type, owner = col
-            action_dir = out_dir+os.sep+col_name
-            if model_filter is None or col_name in model_filter:
-                self.export_collection_clips_to_folder(col_id, skeleton_name, action_dir, is_aligned=1)
-            self.export_processed_motion_data(skeleton_name, action_dir, col_id)
-
-
-    def export_collection_clips_to_folder(self, c_id, skeleton_name, directory, is_processed):
-        print("export", is_processed)
-        #is_aligned = 1
+    def export_collection_clips_to_folder(self, c_id, skeleton_name, directory):
         skeleton = self.load_skeleton(skeleton_name)
         joint_count = 0
         for joint_name in skeleton.nodes.keys():
@@ -229,36 +221,35 @@ class MotionDBSession(ProjectDBSession):
                 joint_count+=1
         skeleton.reference_frame_length = joint_count * 4 + 3
 
-        motion_list = get_motion_list_from_remote_db(self.url, c_id, skeleton_name, is_processed, self.session)
-        if motion_list is None:
-            print("could not find motions")
+        file_list = get_file_list(self.url, c_id, skeleton_name,self.session)
+        if file_list is None:
+            print("could not find files")
             return
-        n_motions = len(motion_list)
+        n_motions = len(file_list)
         if n_motions < 1:
             print("no motions", c_id)
             return
         if not os.path.isdir(directory):
             os.makedirs(directory)
         count = 1
-        #print(skeleton_name, len(motion_list), is_aligned, directory)
-        for motion_id, name in motion_list:
-            print("download motion", str(count)+"/"+str(n_motions), name, is_processed)
-            self.export_motion_clip(skeleton, motion_id, name, directory, is_processed, export_bvh=True)
+        for motion_id, name, data_type in file_list:
+            print("download motion", str(count)+"/"+str(n_motions), name)
+            self.export_motion_clip(skeleton, motion_id, data_type, name, directory, export_bvh=True)
             count+=1
 
     
-    def export_motion_clip(self, skeleton, motion_id, name, directory, is_processed, export_bvh=True):
+    def export_motion_clip(self, skeleton, motion_id, data_type, name, directory, export_bvh=True):
         print("export clip")
-        motion_data = self.get_motion_data(motion_id, is_processed=is_processed)
-        if motion_data is None:
+        data = download_file(self.url, motion_id, self.session)
+        if data is None:
             return
         print("write to file")
         filename = directory+os.sep+name
-        
-        print("ref frame length",skeleton.reference_frame_length)
-        if export_bvh:
+        if export_bvh and data_type.endswith("motion"):
+            data = bz2.decompress(data)
+            data = bson.loads(data)
             motion_vector = MotionVector()
-            motion_vector.from_custom_db_format(motion_data)
+            motion_vector.from_custom_db_format(data)
             print("loaded",name, motion_vector.frames.shape)
             frames = motion_vector.frames
             if motion_vector.frames.shape[1] < skeleton.reference_frame_length:
@@ -266,10 +257,11 @@ class MotionDBSession(ProjectDBSession):
             motion_str = get_bvh_string(skeleton, frames)
             if not name.endswith(".bvh"):
                 filename += ".bvh"
+            with open(filename, "wt") as out_file:
+                out_file.write(motion_str)
         else:
-            motion_str = json.dumps(motion_data)
-        with open(filename, "wt") as out_file:
-             out_file.write(motion_str)
+            with open(filename, "wb") as out_file:
+                out_file.write(data)
             
         filename = directory+os.sep+name
         annotation_str = get_annotation_by_id_from_remote_db(self.url, motion_id, is_processed=False, session=self.session)

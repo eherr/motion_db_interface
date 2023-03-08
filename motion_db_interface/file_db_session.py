@@ -13,10 +13,17 @@ class FileDBSession(DBSession):
 
     def delete_model(self, file_id):
         return delete_file_by_id(self.url, file_id, self.session)
+    
+    def delete_file(self, file_id):
+        return delete_file_by_id(self.url, file_id, self.session)
 
     def upload_file(self, name, c_id, skeleton, model_data, dataType, config=None):
         return upload_file(self.url, name, c_id, skeleton, model_data, dataType,config,  self.session)
 
+    def download_file(self, file_id):
+        model_data = download_file(self.url, file_id, self.session)
+        return model_data
+    
     def download_model(self, file_id):
         model_data = download_file(self.url, file_id, self.session)
         return model_data
