@@ -5,7 +5,7 @@ from .common import call_json_rest_interface, call_binary_rest_interface
 def get_file_list(url, collection_id, skeleton, data_type=None, tags=None, session=None):
     data = {"collection": collection_id, "skeleton": skeleton}
     if data_type is not None:
-        data["dataType"] = data_type
+        data["data_type"] = data_type
     if tags is not None:
         data["tags"] = tags
     if session is not None:
